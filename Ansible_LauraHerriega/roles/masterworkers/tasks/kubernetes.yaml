@@ -1,0 +1,26 @@
+---
+  
+- name: copy files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/yum.repos.d/{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  with_items:
+      - "kubernetes.repo"
+
+- name: Instalando paquetes
+  dnf:
+    name: "{{ kubernetes_rpms }}"
+    state: present
+  become: yes
+
+- name: Arranque del servicio
+  systemd:
+    name: kubelet
+    state: started
+    enabled: yes
+    masked: no
+  become: yes

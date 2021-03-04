@@ -1,0 +1,6 @@
+---
+
+- include_tasks: firewall.yaml
+- include_tasks: kube.yaml
+- include_tasks: calico.yaml
+- include_tasks: haproxy.yaml

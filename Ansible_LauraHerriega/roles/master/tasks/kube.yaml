@@ -1,0 +1,51 @@
+---
+
+# Instalamos el plugin CNI
+#red de los PODs 10.1.0.0/16:
+- name: CNI
+  command: "kubeadm init --pod-network-cidr 10.1.0.0/16"
+  become: yes
+  register: exit
+
+#Guardar variable en un fichero para después leerlo
+- name: copy files
+  copy:
+    content: "{{ exit.stdout }}"
+    dest: /tmp/exit.txt
+  become: yes
+
+- name: Reading only - 2lines
+  shell: "cat /tmp/exit.txt | tail -2"
+  register: token
+
+- name: copy token
+  add_host:
+    PLAY1VAR: "{{ token.stdout }}"
+    name: "token"
+  become: yes
+
+#autorizar al usuario root acceder al cluster
+- name: Create a directory if it does not exist
+  file:
+    path: /root/.kube
+    state: directory
+    mode: '0644'
+  become: yes
+
+- name: Auth user cluster access
+  copy:
+    src: "/etc/kubernetes/admin.conf"
+    dest: "/root/.kube/config"
+    owner: root
+    group: root
+    mode: '0644'
+    remote_src: yes
+  become: yes
+
+- name: Auth user
+  file:
+    path: /root/.kube/config
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes

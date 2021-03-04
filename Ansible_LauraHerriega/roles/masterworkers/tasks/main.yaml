@@ -1,0 +1,5 @@
+---
+
+- include_tasks: firewall-install.yaml
+- include_tasks: docker.yaml
+- include_tasks: kubernetes.yaml

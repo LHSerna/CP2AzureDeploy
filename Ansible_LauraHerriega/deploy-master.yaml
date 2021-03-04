@@ -1,0 +1,7 @@
+---
+
+- name: Master
+  hosts: master
+  gather_facts: true
+  roles:
+    - master

@@ -1,0 +1,32 @@
+---
+
+# Establecer zona horaria Europe/Madrid
+- name: Set timezone to Europe/Madrid
+  timezone:
+    name: Europe/Madrid
+  become: yes
+  become_method : sudo
+
+# Instalar paquetes
+- name: install packages
+  dnf:
+    name: "{{ common_rpms }}"
+    state: latest
+  become: yes
+
+# Habilitar servicios
+- name: enable services
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+    masked: no
+  become: yes
+  with_items:
+    - "chronyd"
+    - "firewalld"
+
+- name: timedatectl true
+  command: "timedatectl set-ntp true"
+  become: yes
+

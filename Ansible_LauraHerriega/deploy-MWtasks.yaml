@@ -1,0 +1,10 @@
+---
+
+- name: Common tasks to Master and Workers
+  hosts: kubernetes
+  vars_files:
+    - "group_vars/docker.yaml"
+    - "group_vars/kubernetes.yaml"
+  gather_facts: true
+  roles:
+    - masterworkers

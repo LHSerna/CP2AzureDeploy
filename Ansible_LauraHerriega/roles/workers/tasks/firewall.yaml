@@ -1,0 +1,35 @@
+---
+
+# Configuramos el firewall para permitir kubernetes:
+- name: firewall config for worker
+  firewalld:
+    port: 10250/tcp
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+- name: firewall config for worker
+  firewalld:
+    port: 30000-32767/tcp
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+# Para ejecutar el comando de kubeadm que nos produjo la ejecución de kubadmin init se  copia primero a los workers desde master
+- name: copy files
+  copy:
+    content: "{{ hostvars['token']['PLAY1VAR'] }}"
+    dest: /tmp/token.sh
+  become: yes
+
+- name: kubeadm reset
+  command: "kubeadm reset -f"
+  become: yes
+
+- name: kubeadm execution
+  command: "sh /tmp/token.sh"
+  become: yes

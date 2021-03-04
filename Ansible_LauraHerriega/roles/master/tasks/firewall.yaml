@@ -1,0 +1,77 @@
+---
+
+# Configuramos el firewall para permitir kubernetes:
+- name: firewall config for master
+  firewalld:
+    port: 6443/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+- name: firewall config for master
+  firewalld:
+    port: 2379-2380/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+- name: firewall config for master
+  firewalld:
+    port: 10250/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+- name: firewall config for master
+  firewalld:
+    port: 10251/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+- name: firewall config for master
+  firewalld:
+    port: 10252/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+- name: firewall config for master
+  firewalld:
+    port: 10255/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true
+
+# descargando imágenes
+- name: kubeadm images download
+  command: "kubeadm config images pull"
+  become: yes
+# Permitir acceso desde worker1
+- name: worker01
+  firewalld:
+    rich_rule: rule family=ipv4 source address=10.0.1.11/16 accept
+    permanent: yes
+    state: enabled
+  become: true
+# Permitir acceso desde worker1
+- name: worker02
+  firewalld:
+    rich_rule: rule family=ipv4 source address=10.0.1.12/16 accept
+    permanent: yes
+    state: enabled
+  become: true
+# Permitir acceso a localhost:
+- name: docker
+  firewalld:
+    rich_rule: rule family=ipv4 source address=172.17.0.0/16 accept
+    zone: public
+    permanent: yes
+    state: enabled
+  become: true

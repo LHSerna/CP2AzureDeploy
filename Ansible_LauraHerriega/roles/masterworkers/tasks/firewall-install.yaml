@@ -1,0 +1,32 @@
+---
+
+# activar comunicación de los PODs dentro del cluster mediante VXLAN
+- name: enable transparent masquerading 
+  command: "modprobe br_netfilter"
+  become: yes
+
+- name: copy files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/sysctl.d/{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  when: ansible_os_family == 'RedHat'
+  with_items:
+      - "k8s.conf"
+
+#sysctl --system
+- name: enable 
+  command: "sysctl --system"
+  become: yes
+
+#Desactivar SWAP
+- name: disable SWAP 
+  command: "swapoff  -a"
+  become: yes
+
+- name: disable SWAP2 
+  command: "free -m"
+  become: yes

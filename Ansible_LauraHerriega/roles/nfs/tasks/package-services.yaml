@@ -1,0 +1,27 @@
+---
+
+- name: install packages
+  dnf:
+    name: "{{ nfs_rpms }}"
+  become: yes
+
+- name: enable services
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+    masked: no
+  become: yes
+  with_items:
+    - "nfs-server"
+    - "firewalld"
+
+#configurar el acceso al share de NFS
+- name: copy files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/{{ item }}"
+    mode: '0644'
+  become: yes
+  with_items:
+      - "exports"
